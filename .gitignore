@@ -1,0 +1,21 @@
+# Python
+*.pyc
+__pycache__/
+
+# Django
+db.sqlite3
+*.log
+
+# Environment variables
+.env
+
+# Static and media
+/static/
+/media/
+
+# Virtual environment (if created inside the project)
+venv/
+env/
+
+# Django Migrations
+*/migrations/
