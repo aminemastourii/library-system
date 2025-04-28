@@ -1,3 +1,4 @@
+from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, FormView
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -7,29 +8,34 @@ from .models import User, BorrowerProfile
 from .forms import BorrowerSignUpForm, CompleteProfileForm
 
 
-class BorrowerSignUpView(CreateView):
+class SignUpView(CreateView):
     model = User
     form_class = BorrowerSignUpForm
     template_name = 'users/signup.html'
-    success_url = reverse_lazy('complete-profile')
+    success_url = reverse_lazy('complete_profile')
 
     def form_valid(self, form):
         user = form.save(commit=False)
-        user.is_borrower = True  # Mark user as borrower
         user.save()
-        login(self.request, user)  # Log the user in directly after signup
+        self.request.session['temp_username'] = user.username 
+        login(self.request, user)  
         return super().form_valid(form)
 
 
-class CompleteProfileView(LoginRequiredMixin, FormView):
+class CompleteProfileView( FormView):
     template_name = 'users/complete_profile.html'
     form_class = CompleteProfileForm
     success_url = reverse_lazy('home')
 
     def form_valid(self, form):
-        user = self.request.user
+        username = self.request.session.get('temp_username')
+        if not username:
+           return redirect('signup')  
+
+        user = User.objects.get(username=username) 
         user.first_name = form.cleaned_data['first_name']
         user.last_name = form.cleaned_data['last_name']
+        user.is_borrower = True 
         user.save()
         birthday = form.cleaned_data['birthday']
         BorrowerProfile.objects.create(
