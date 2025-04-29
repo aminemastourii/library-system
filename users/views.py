@@ -1,11 +1,23 @@
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
-from django.views.generic import CreateView, FormView
+from django.views.generic import CreateView, FormView, TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth import login
 from django.contrib.auth.views import LoginView
+from books.models import Book
+from borrowings.models import Borrowing
 from .models import User, BorrowerProfile
 from .forms import BorrowerSignUpForm, CompleteProfileForm
+
+
+class DashboardView(LoginRequiredMixin, TemplateView):
+    template_name = 'users/dashboard.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['books'] = Book.objects.all()
+        context['borrowings'] = Borrowing.objects.filter(borrower=self.request.user)
+        return context
 
 
 class SignUpView(CreateView):
