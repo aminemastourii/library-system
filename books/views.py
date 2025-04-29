@@ -9,10 +9,25 @@ class BookListView(ListView):
     template_name = 'books/book_list.html'
     context_object_name = 'books'
 
+from borrowings.models import Borrowing
+from django.utils import timezone
+
 class BookDetailView(DetailView):
     model = Book
     template_name = 'books/book_detail.html'
     context_object_name = 'book'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user = self.request.user
+        book = self.get_object()
+        context['can_borrow'] = book.is_available() and Borrowing.objects.filter(
+            borrower=user, end_date__gte=timezone.now()).count() < 5
+        context['borrow_limit_reached'] = Borrowing.objects.filter(
+            borrower=user, end_date__gte=timezone.now()).count() >= 5
+        context['already_borrowed'] = Borrowing.objects.filter(borrower=user, book=book, end_date__gte=timezone.now()).exists()
+        return context
+
 
 
 class BookCreateView(CreateView):
