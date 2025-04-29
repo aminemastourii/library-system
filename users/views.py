@@ -9,6 +9,8 @@ from borrowings.models import Borrowing
 from .models import User, BorrowerProfile
 from .forms import BorrowerSignUpForm, CompleteProfileForm
 
+class HomeView(TemplateView):
+    template_name = 'users/home.html'
 
 class DashboardView(LoginRequiredMixin, TemplateView):
     template_name = 'users/dashboard.html'
@@ -37,7 +39,7 @@ class SignUpView(CreateView):
 class CompleteProfileView( FormView):
     template_name = 'users/complete_profile.html'
     form_class = CompleteProfileForm
-    success_url = reverse_lazy('home')
+    success_url = reverse_lazy('dashboard')
 
     def form_valid(self, form):
         username = self.request.session.get('temp_username')
@@ -61,4 +63,4 @@ class CompleteProfileView( FormView):
 class CustomLoginView(LoginView):
     template_name='users/login.html'
     def get_success_url(self):
-        return reverse_lazy('home')
+        return reverse_lazy('dashboard')

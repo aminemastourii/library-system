@@ -24,5 +24,5 @@ urlpatterns = [
     #path('', views.home_view, name='home'),  # Assuming you have a home view
     path('admin/', admin.site.urls),
     path('books/', include('books.urls')),
-    path('users/', include('users.urls')),
+    path('', include('users.urls')),
 ]
