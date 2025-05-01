@@ -39,12 +39,14 @@ class SignUpView(CreateView):
 class CompleteProfileView( FormView):
     template_name = 'users/complete_profile.html'
     form_class = CompleteProfileForm
-    success_url = reverse_lazy('dashboard')
+    def get_success_url(self):
+        return reverse_lazy('dashboard')
 
     def form_valid(self, form):
         username = self.request.session.get('temp_username')
         if not username:
-           return redirect('signup')  
+           return redirect('signup')
+          
 
         user = User.objects.get(username=username) 
         user.first_name = form.cleaned_data['first_name']
@@ -57,6 +59,7 @@ class CompleteProfileView( FormView):
                 birthday=birthday,
                 
             )
+        login(self.request, user)
         return super().form_valid(form)
     
 

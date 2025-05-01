@@ -1,7 +1,8 @@
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 from .models import Book
-
+from borrowings.models import Borrowing
+from django.utils import timezone
 
 
 class BookListView(ListView):
@@ -9,8 +10,7 @@ class BookListView(ListView):
     template_name = 'books/book_list.html'
     context_object_name = 'books'
 
-from borrowings.models import Borrowing
-from django.utils import timezone
+
 
 class BookDetailView(DetailView):
     model = Book
