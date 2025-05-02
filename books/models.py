@@ -6,10 +6,8 @@ class Book(models.Model):
     publish_date = models.DateField()
     category = models.CharField(max_length=100)
     stock = models.PositiveIntegerField(default=10) 
-    image_path = models.ImageField(
-        upload_to='book/images',  # Save in media/events/images folder
-        default='images/default.jpg'
-    )
+    image = models.ImageField(upload_to='book_images/', blank=True, null=True)  # Add this field
+
 
     def __str__(self):
         return self.title

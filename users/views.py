@@ -34,12 +34,10 @@ class DashboardView(LoginRequiredMixin, TemplateView):
        
         sort_method = self.request.GET.get('sort', 'default')
         if sort_method == 'default':
-            context['books'] = Book.objects.all().order_by('title')
+            books = books.order_by('title')  
         elif sort_method == 'borrowed':
-            context['books'] = (
-                Book.objects.annotate(borrow_count=Count('borrowing'))
-                .order_by('-borrow_count')
-            )
+            books = books.annotate(borrow_count=Count('borrowing')).order_by('-borrow_count')
+            
         context['books'] = books
         context['borrowings'] = Borrowing.objects.filter(borrower=self.request.user)
         context['top_borrowed_books'] = (

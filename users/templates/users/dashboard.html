@@ -1,3 +1,4 @@
+{% load static %}
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -16,6 +17,11 @@
     <ul>
         {% for book in top_borrowed_books %}
             <li>
+                {% if book.image %}
+                <img src="{{ book.image.url }}" alt="{{ book.title }}" style="width: 100px; height: auto;">
+            {% else %}
+                <img src="{% static 'default_book_image.jpg' %}" alt="Default Image" style="width: 100px; height: auto;">
+            {% endif %}        
                 <a href="{% url 'book_detail' book.pk %}">{{ book.title }}</a> 
                 (Borrowed {{ book.borrow_count }} times)
             </li>
@@ -37,6 +43,11 @@
 <ul>
     {% for book in books %}
         <li>
+            {% if book.image %}
+            <img src="{{ book.image.url }}" alt="{{ book.title }}" style="width: 100px; height: auto;">
+        {% else %}
+            <img src="{% static 'default_book_image.jpg' %}" alt="Default Image" style="width: 100px; height: auto;">
+        {% endif %}   
             <a href="{% url 'book_detail' book.pk %}">{{ book.title }}</a> by {{ book.author }}
         </li>
     {% endfor %}
