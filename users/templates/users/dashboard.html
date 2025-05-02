@@ -8,6 +8,21 @@
     <h1>HEY , THIS IS USER DASHBOARD</h1>
     
 
+    <h2>Top 3 Most Borrowed Books</h2>
+    <ul>
+        {% for book in top_borrowed_books %}
+            <li>
+                <a href="{% url 'book_detail' book.pk %}">{{ book.title }}</a> 
+                (Borrowed {{ book.borrow_count }} times)
+            </li>
+        {% empty %}
+            <li>No books have been borrowed yet.</li>
+        {% endfor %}
+    </ul>
+
+
+
+
 <h2>Available Books</h2>
 
 <ul>

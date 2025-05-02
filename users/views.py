@@ -3,6 +3,7 @@ from django.urls import reverse_lazy
 from django.views.generic import CreateView, FormView, TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth import login
+from django.db.models import Count
 from django.contrib.auth.views import LoginView
 from books.models import Book
 from borrowings.models import Borrowing
@@ -19,7 +20,14 @@ class DashboardView(LoginRequiredMixin, TemplateView):
         context = super().get_context_data(**kwargs)
         context['books'] = Book.objects.all()
         context['borrowings'] = Borrowing.objects.filter(borrower=self.request.user)
+
+        context['top_borrowed_books'] = (
+            Book.objects.annotate(borrow_count=Count('borrowing'))
+            .order_by('-borrow_count')[:3]
+        )
+       
         return context
+    
 
 
 class SignUpView(CreateView):
