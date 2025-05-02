@@ -130,24 +130,7 @@ RESTful API using Django REST Framework
 
 Book cover images
 
-Rating and review system
 
-Deployment on Render, Heroku, or PythonAnywhere
 
-👤 Author
-Name: Your Name
 
-University: Your University (if academic)
 
-Contact: your.email@example.com (optional)
-
-📄 License
-This project is released under the MIT License — feel free to use and adapt for personal or academic purposes.
-
-yaml
-Copy
-Edit
-
----
-
-Let me know if you’d like a version with markdown formatting preview (or hosted preview)
