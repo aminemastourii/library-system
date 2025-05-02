@@ -18,13 +18,26 @@ class DashboardView(LoginRequiredMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['books'] = Book.objects.all()
+       # Get the sorting method from the query parameters
+        sort_method = self.request.GET.get('sort', 'default')
+
+        # Default sorting: by book title
+        if sort_method == 'default':
+            context['books'] = Book.objects.all().order_by('title')
+
+        # Sorting by borrowing count
+        elif sort_method == 'borrowed':
+            context['books'] = (
+                Book.objects.annotate(borrow_count=Count('borrowing'))
+                .order_by('-borrow_count')
+            )
         context['borrowings'] = Borrowing.objects.filter(borrower=self.request.user)
 
         context['top_borrowed_books'] = (
             Book.objects.annotate(borrow_count=Count('borrowing'))
             .order_by('-borrow_count')[:3]
         )
+        context['current_sort'] = sort_method
        
         return context
     

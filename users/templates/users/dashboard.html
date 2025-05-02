@@ -25,6 +25,11 @@
 
 <h2>Available Books</h2>
 
+<div>
+    <a href="?sort=default" class="{% if current_sort == 'default' %}active{% endif %}">Sort by Title</a> |
+    <a href="?sort=borrowed" class="{% if current_sort == 'borrowed' %}active{% endif %}">Sort by Most Borrowed</a>
+</div>
+
 <ul>
     {% for book in books %}
         <li>
