@@ -26,40 +26,39 @@ class SignUpView(CreateView):
     model = User
     form_class = BorrowerSignUpForm
     template_name = 'users/signup.html'
-    success_url = reverse_lazy('complete_profile')
-
+    
     def form_valid(self, form):
         user = form.save(commit=False)
         user.save()
-        self.request.session['temp_username'] = user.username 
+    
         login(self.request, user)  
-        return super().form_valid(form)
+        return redirect('complete_profile')
 
 
-class CompleteProfileView( FormView):
+class CompleteProfileView(FormView):
     template_name = 'users/complete_profile.html'
     form_class = CompleteProfileForm
-    def get_success_url(self):
-        return reverse_lazy('dashboard')
+    success_url = reverse_lazy('dashboard')
+
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return redirect('signup')
+        return super().dispatch(request, *args, **kwargs)
 
     def form_valid(self, form):
-        username = self.request.session.get('temp_username')
-        if not username:
-           return redirect('signup')
-          
-
-        user = User.objects.get(username=username) 
+        user = self.request.user
         user.first_name = form.cleaned_data['first_name']
         user.last_name = form.cleaned_data['last_name']
-        user.is_borrower = True 
+        user.is_borrower = True
         user.save()
-        birthday = form.cleaned_data['birthday']
-        BorrowerProfile.objects.create(
+
+        
+        if not BorrowerProfile.objects.filter(user=user).exists():
+            BorrowerProfile.objects.create(
                 user=user,
-                birthday=birthday,
-                
+                birthday=form.cleaned_data['birthday']
             )
-        login(self.request, user)
+
         return super().form_valid(form)
     
 
