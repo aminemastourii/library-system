@@ -36,24 +36,6 @@ A full-featured **Library Management System** built with Django. This project al
 
 ---
 
-## 📁 Project Structure
-
-librarysys/
-├── books/ # Book app: models, views, templates
-├── borrowings/ # Borrowing logic: models, views, templates
-├── users/ # User registration, profile, auth
-├── templates/ # Shared HTML templates
-├── static/ # Static files (CSS, JS, images)
-├── db.sqlite3 # SQLite database
-├── manage.py
-└── README.md
-
-yaml
-Copy
-Edit
-
----
-
 
 
 
