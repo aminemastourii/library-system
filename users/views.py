@@ -26,6 +26,11 @@ class SignUpView(CreateView):
     model = User
     form_class = BorrowerSignUpForm
     template_name = 'users/signup.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            return redirect('dashboard')
+        return super().dispatch(request, *args, **kwargs)
     
     def form_valid(self, form):
         user = form.save(commit=False)
@@ -63,6 +68,12 @@ class CompleteProfileView(FormView):
     
 
 class CustomLoginView(LoginView):
-    template_name='users/login.html'
+    template_name = 'users/login.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            return redirect('dashboard')
+        return super().dispatch(request, *args, **kwargs)
+
     def get_success_url(self):
         return reverse_lazy('dashboard')
