@@ -1,12 +1,109 @@
 <!DOCTYPE html>
-<html>
-<head>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Library Home</title>
-</head>
-<body>
-    <h1>Welcome to the Library System</h1>
-    <a href="{% url 'signup' %}">
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    {% load static %}
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Roboto", sans-serif;
+      }
+
+      body {
+        background-image: url("{% static 'users/assets/background.jpg' %}");
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+        height: 100vh;
+      }
+
+      .header {
+        background-color: #0277bd;
+        color: white;
+        padding: 1rem 2rem;
+        display: flex;
+        align-items: center;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+      }
+
+      .logo {
+        font-size: 1.8rem;
+        font-weight: 500;
+        margin-right: 2rem;
+        display: flex;
+        align-items: center;
+      }
+
+      .logo-icon {
+        font-size: 2rem;
+        margin-right: 0.5rem;
+      }
+
+      .content-container {
+        background-color: rgba(255, 255, 255, 0.95);
+        max-width: 600px;
+        margin: 4rem auto;
+        padding: 2rem;
+        border-radius: 8px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        text-align: center;
+      }
+
+      h1 {
+        color: #0277bd;
+        margin-bottom: 1.5rem;
+        font-size: 2.2rem;
+      }
+
+      p {
+        color: #555;
+        margin-bottom: 2rem;
+        font-size: 1.1rem;
+        line-height: 1.5;
+      }
+
+      button {
+        background-color: #0277bd;
+        color: white;
+        border: none;
+        padding: 1rem 2rem;
+        font-size: 1.1rem;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: 500;
+        transition: background-color 0.2s;
+      }
+
+      button:hover {
+        background-color: #015f92;
+      }
+    </style>
+  </head>
+  <body>
+    <header class="header">
+      <div class="logo">
+        <span class="logo-icon">📚</span>
+        Django Library
+      </div>
+    </header>
+
+    <div class="content-container">
+      <h1>Welcome to the Library System</h1>
+      <p>
+        Discover a world of books and knowledge. Join our library system to
+        borrow books, manage returns, and explore our vast collection.
+      </p>
+      <a href="{% url 'signup' %}">
         <button>Get Started</button>
-    </a>
-</body>
+      </a>
+    </div>
+  </body>
 </html>
