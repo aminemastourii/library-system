@@ -1,3 +1,5 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -5,6 +7,12 @@
 </head>
 <body>
     <h1>{{ book.title }}</h1>
+    {% if book.image %}
+        <img src="{{ book.image.url }}" alt="{{ book.title }}" style="width: 300px; height: auto;">
+    {% else %}
+        <img src="{% static 'default_book_image.jpg' %}" alt="Default Image" style="width: 300px; height: auto;">
+    {% endif %}
+    
     <p>Author: {{ book.author }}</p>
     <p>Category: {{ book.category }}</p>
     <p>Stock: {{ book.stock }}</p>
@@ -19,6 +27,8 @@
             {% endfor %}
         </div>
     {% endif %}
+    
+    
 
     <!-- Borrow button -->
     <form method="post" action="{% url 'borrow_book' book.pk %}">
