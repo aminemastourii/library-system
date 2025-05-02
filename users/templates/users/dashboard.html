@@ -6,6 +6,10 @@
 </head>
 <body>
     <h1>HEY , THIS IS USER DASHBOARD</h1>
+    <form method="get" action="{% url 'dashboard' %}">
+        <input type="text" name="search" placeholder="Search books by title or category" value="{{ search_query }}">
+        <button type="submit">Search</button>
+    </form>
     
 
     <h2>Top 3 Most Borrowed Books</h2>
@@ -41,9 +45,24 @@
 <h2>Your Borrowings</h2>
 <ul>
     {% for borrowing in borrowings %}
-        <li>{{ borrowing.book.title }} (Due: {{ borrowing.end_date }})</li>
+        <li>{{ borrowing.book.title }} (Due: {{ borrowing.end_date }})
+            <form method="post" action="{% url 'return_book' borrowing.pk %}" style="display:inline;">
+                {% csrf_token %}
+                <button type="submit">Return</button>
+            </form>
+            
+        </li>
     {% endfor %}
 </ul>
+{% if messages %}
+    <div class="messages">
+        {% for message in messages %}
+            <div class="alert {{ message.tags }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
 <form method="post" action="{% url 'logout' %}">
     {% csrf_token %}
     <button type="submit">Logout</button>

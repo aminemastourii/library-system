@@ -3,7 +3,8 @@ from django.urls import reverse_lazy
 from django.views.generic import CreateView, FormView, TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth import login
-from django.db.models import Count
+from django.utils import timezone
+from django.db.models import Count, Q
 from django.contrib.auth.views import LoginView
 from books.models import Book
 from borrowings.models import Borrowing
@@ -17,27 +18,36 @@ class DashboardView(LoginRequiredMixin, TemplateView):
     template_name = 'users/dashboard.html'
 
     def get_context_data(self, **kwargs):
+        overdue_borrowings = Borrowing.objects.filter(end_date__lt=timezone.now())
+        for borrowing in overdue_borrowings:
+            borrowing.book.stock += 1  
+            borrowing.book.save()
+            borrowing.delete() 
         context = super().get_context_data(**kwargs)
-       # Get the sorting method from the query parameters
-        sort_method = self.request.GET.get('sort', 'default')
 
-        # Default sorting: by book title
+        search_query = self.request.GET.get('search', '')
+        books = Book.objects.all()
+        if search_query:
+            books = books.filter(
+                Q(title__icontains=search_query) | Q(category__icontains=search_query)
+            )
+       
+        sort_method = self.request.GET.get('sort', 'default')
         if sort_method == 'default':
             context['books'] = Book.objects.all().order_by('title')
-
-        # Sorting by borrowing count
         elif sort_method == 'borrowed':
             context['books'] = (
                 Book.objects.annotate(borrow_count=Count('borrowing'))
                 .order_by('-borrow_count')
             )
+        context['books'] = books
         context['borrowings'] = Borrowing.objects.filter(borrower=self.request.user)
-
         context['top_borrowed_books'] = (
             Book.objects.annotate(borrow_count=Count('borrowing'))
             .order_by('-borrow_count')[:3]
         )
         context['current_sort'] = sort_method
+        context['search_query'] = search_query
        
         return context
     

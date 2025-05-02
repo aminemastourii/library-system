@@ -1,3 +1,4 @@
+from django.urls import reverse_lazy
 from django.views import View
 from django.shortcuts import redirect, get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -26,3 +27,13 @@ class BorrowBookView(LoginRequiredMixin, View):
         Borrowing.objects.create(borrower=user, book=book)
         messages.success(request, f"You borrowed '{book.title}' successfully!")
         return redirect('book_detail', pk=pk)
+    
+class ReturnBookView(LoginRequiredMixin, View):
+    def post(self, request, pk):
+        borrowing = get_object_or_404(Borrowing, pk=pk, borrower=request.user)
+        borrowing.book.stock += 1
+        borrowing.book.save()
+        borrowing.delete()
+        
+        messages.success(request, f"You have successfully returned '{borrowing.book.title}'.")
+        return redirect(reverse_lazy('dashboard'))
