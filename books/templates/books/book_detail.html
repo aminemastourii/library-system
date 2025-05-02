@@ -17,6 +17,14 @@
     <p>Category: {{ book.category }}</p>
     <p>Stock: {{ book.stock }}</p>
 
+    <p><strong>Availability:</strong> 
+        {% if is_available %}
+            <span style="color: green;">Available</span>
+        {% else %}
+            <span style="color: red;">Not Available</span>
+        {% endif %}
+    </p>
+
     <!-- Display messages -->
     {% if messages %}
         <div class="messages">

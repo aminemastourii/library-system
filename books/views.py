@@ -21,6 +21,7 @@ class BookDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         user = self.request.user
         book = self.get_object()
+        context['is_available'] = book.is_available()
         context['can_borrow'] = book.is_available() and Borrowing.objects.filter(
             borrower=user, end_date__gte=timezone.now()).count() < 5
         context['borrow_limit_reached'] = Borrowing.objects.filter(
