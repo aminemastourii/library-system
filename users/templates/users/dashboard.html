@@ -56,12 +56,17 @@
 <h2>Your Borrowings</h2>
 <ul>
     {% for borrowing in borrowings %}
-        <li>{{ borrowing.book.title }} (Due: {{ borrowing.end_date }})
+        <li>
+            {% if borrowing.book.image %}
+                <img src="{{ borrowing.book.image.url }}" alt="{{ borrowing.book.title }}" style="width: 100px; height: auto;">
+            {% else %}
+                <img src="{% static 'default_book_image.jpg' %}" alt="Default Image" style="width: 100px; height: auto;">
+            {% endif %}
+            {{ borrowing.book.title }} (Due: {{ borrowing.end_date }})
             <form method="post" action="{% url 'return_book' borrowing.pk %}" style="display:inline;">
                 {% csrf_token %}
                 <button type="submit">Return</button>
             </form>
-            
         </li>
     {% endfor %}
 </ul>
