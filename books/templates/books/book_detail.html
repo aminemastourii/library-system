@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Book Detail</title>
+</head>
+<body>
+    <h1>{{ book.title }}</h1>
+    <p>Author: {{ book.author }}</p>
+    <p>Category: {{ book.category }}</p>
+    <p>Stock: {{ book.stock }}</p>
+
+    <!-- Display messages -->
+    {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+                <div class="alert {{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <!-- Borrow button -->
+    <form method="post" action="{% url 'borrow_book' book.pk %}">
+        {% csrf_token %}
+        <button type="submit">Borrow</button>
+    </form>
+    <a href="{% url 'dashboard' %}" class="btn btn-secondary">Back to Dashboard</a>
+</body>
+</html>

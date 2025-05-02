@@ -11,6 +11,10 @@ class BorrowBookView(LoginRequiredMixin, View):
         book = get_object_or_404(Book, pk=pk)
         user = request.user
 
+        if Borrowing.objects.filter(borrower=user, book=book, end_date__gte=timezone.now()).exists():
+            messages.error(request, "You have already borrowed this book.")
+            return redirect('book_detail', pk=pk)
+        
         if Borrowing.objects.filter(borrower=user, end_date__gte=timezone.now()).count() >= 5:
             messages.error(request, "You have reached your borrowing limit.")
             return redirect('book_detail', pk=pk)
@@ -21,4 +25,4 @@ class BorrowBookView(LoginRequiredMixin, View):
 
         Borrowing.objects.create(borrower=user, book=book)
         messages.success(request, f"You borrowed '{book.title}' successfully!")
-        return redirect('dashboard')
+        return redirect('book_detail', pk=pk)
