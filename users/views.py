@@ -10,6 +10,8 @@ from books.models import Book
 from borrowings.models import Borrowing
 from .models import User, BorrowerProfile
 from .forms import BorrowerSignUpForm, CompleteProfileForm
+from django.http import HttpResponse
+from django.template.loader import render_to_string
 
 class HomeView(TemplateView):
     template_name = 'users/home.html'
@@ -48,7 +50,14 @@ class DashboardView(LoginRequiredMixin, TemplateView):
         context['search_query'] = search_query
        
         return context
-    
+        
+    def get(self, request, *args, **kwargs):
+        # Check if this is an AJAX request
+        if request.GET.get('ajax') == 'true':
+            context = self.get_context_data(**kwargs)
+            html = render_to_string(self.template_name, context, request=request)
+            return HttpResponse(html)
+        return super().get(request, *args, **kwargs)
 
 
 class SignUpView(CreateView):

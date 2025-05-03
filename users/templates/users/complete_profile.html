@@ -18,15 +18,24 @@
       }
 
       body {
-        background-image: url("{% static 'users/assets/background.jpg' %}");
-        background-size: cover;
-        background-position: center;
-        background-attachment: fixed;
+        position: relative;
         height: 100vh;
+        overflow: hidden;
       }
-
+      #background-video {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        min-width: 100%;
+        min-height: 100%;
+        width: auto;
+        height: auto;
+        z-index: -1000;
+        object-fit: cover;
+      }
       .header {
-        background-color: #0277bd;
+        background-color: #217093;
         color: white;
         padding: 1rem 2rem;
         display: flex;
@@ -57,7 +66,7 @@
       }
 
       h2 {
-        color: #0277bd;
+        color: #217093;
         margin-bottom: 1.5rem;
         text-align: center;
         font-size: 2rem;
@@ -76,7 +85,7 @@
         font-weight: 500;
         margin-bottom: 0.5rem;
         display: block;
-        color: #333;
+        color: #217093;
       }
 
       input {
@@ -85,10 +94,17 @@
         border: 1px solid #ddd;
         border-radius: 4px;
         font-size: 1rem;
+        color: #217093;
+      }
+
+      /* Style for calendar icon in date inputs */
+      input[type="date"]::-webkit-calendar-picker-indicator {
+        filter: invert(48%) sepia(13%) saturate(3207%) hue-rotate(166deg)
+          brightness(90%) contrast(80%);
       }
 
       button {
-        background-color: #0277bd;
+        background-color: #4eb8dd;
         color: white;
         border: none;
         padding: 0.8rem;
@@ -101,7 +117,7 @@
       }
 
       button:hover {
-        background-color: #015f92;
+        background-color: #217093;
       }
 
       .profile-info {
@@ -127,10 +143,17 @@
     </style>
   </head>
   <body>
+    <video autoplay muted loop id="background-video">
+      <source
+        src="{% static 'users/assets/background_video.mp4' %}"
+        type="video/mp4"
+      />
+      Your browser does not support HTML5 video.
+    </video>
     <header class="header">
       <div class="logo">
         <span class="logo-icon">📚</span>
-        Django Library
+        Library System
       </div>
     </header>
 
