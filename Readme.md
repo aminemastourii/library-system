@@ -1,110 +1,140 @@
-📚 Library Management System
-This is a Django-based Library Management System that allows registered users to borrow books, track their borrowing history, and manage stock availability. It includes basic user authentication and role-based functionality.
+# 📚 Django Library Management System
 
-🚀 Features
-📖 Add and manage books with cover images, categories, and stock count.
+A simple Django-based library management system that allows users to browse, borrow, and manage books. It includes user authentication, stock control, borrowing rules, and profile management.
 
-👥 Custom user model with borrower identification.
+---
 
-📅 Borrowing system with automatic due dates.
+## 🚀 Features
 
-📉 Stock auto-decreases on borrow and prevents borrowing if out of stock.
+- ✅ Book catalog with title, author, category, publish date, and image
+- 📦 Stock management (auto-decrease on borrow)
+- 👤 Custom user model with borrower role
+- 🗓️ Borrowing system with 30-day default duration
+- 🚫 Limit of 5 active borrowings per user
+- 🧾 Borrower profile with birthday
+- 🧠 Admin-friendly (Django Admin integration)
 
-🚫 Borrowing limit enforced (max 5 active borrowings).
+---
 
-🧠 User profiles with extra details like birthday.
+## 🧱 Models Overview
 
-🛠️ Tech Stack
-Backend: Django 4.x
+### `Book`
 
-Database: SQLite (default) or any Django-supported DB
+- `title`, `author`, `publish_date`, `category`
+- `stock`: Positive integer with default value
+- `image`: Optional cover image
+- `is_available()`: Returns `True` if stock > 0
+- `borrow_count()`: Returns number of times book was borrowed
 
-Media Handling: Django ImageField for book covers
+### `User` (extends Django's `AbstractUser`)
 
-Authentication: Django's built-in auth system (extended)
+- Adds `is_borrower`: Boolean flag
 
-🧩 Models Overview
-Book
-Represents a book in the library.
+### `BorrowerProfile`
 
-Field Description
-title Title of the book
-author Author's name
-publish_date Publication date
-category Category/genre
-stock Number of available copies
-image Optional book cover image
+- Linked via OneToOne to `User`
+- Includes `birthday`
 
-📌 Includes:
+### `Borrowing`
 
-is_available() to check if stock > 0
+- Links `User` and `Book`
+- Automatically sets `start_date` and `end_date` (30 days later)
+- Enforces:
+  - 📉 Decrease in stock
+  - ❌ Prevent borrow if out of stock
+  - 🚫 Max 5 active borrowings
 
-borrow_count() to return number of times borrowed
+---
 
-User
-Custom user model (inherits from AbstractUser) with an additional field:
+## 🛠️ Getting Started
 
-Field Description
-is_borrower Boolean to identify borrower users
+### 1. Clone the repo
 
-BorrowerProfile
-Extra user details.
-
-Field Description
-birthday Date of birth
-
-Borrowing
-Tracks each book borrowing instance.
-
-Field Description
-borrower FK to User
-book FK to Book
-start_date Date of borrowing (default: today)
-end_date Date due (default: today + 30 days)
-
-📌 Logic includes:
-
-Prevents borrowing if book stock is 0
-
-Enforces a borrowing limit of 5 active borrowings per user
-
-Reduces book stock upon borrowing
-
-📷 Media & Static Files
-To handle book cover images:
-
-MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
-Make sure to configure urls.py to serve media in development.
-
-🧪 Running the App Locally
-Clone the repository
-
+```bash
 git clone https://github.com/aminemastourii/library-system.git
 cd library-management
-Create a virtual environment
+```
 
+### 2. Set up a virtual environment
+
+```bash
 python -m venv venv
-source venv/bin/activate # On Windows: venv\Scripts\activate
-Install dependencies
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+```
 
+### 3. Install dependencies
+
+```bash
 pip install -r requirements.txt
-Apply migrations
+```
 
+### 4. Run migrations
+
+```bash
 python manage.py makemigrations
 python manage.py migrate
-Create a superuser
+```
 
+### 5. Create a superuser
+
+```bash
 python manage.py createsuperuser
-Run the server
+```
 
+### 6. Start the development server
+
+```bash
 python manage.py runserver
-📬 API (Optional Enhancement)
-If you plan to expose this as an API in the future, consider adding:
+```
 
-Django REST Framework for API endpoints
+Then open [http://localhost:8000/admin](http://localhost:8000/admin) to access the Django admin panel.
 
-Token-based authentication for mobile apps or external clients
+---
 
-📄 License
-MIT License. You’re free to use, modify, and share.
+## 🖼️ Media Setup (for book images)
+
+In `settings.py`:
+
+```python
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+```
+
+In `urls.py` (for development only):
+
+```python
+from django.conf import settings
+from django.conf.urls.static import static
+
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+```
+
+---
+
+## 📂 Project Structure
+
+```
+library-management/
+│
+├── books/               # Book model & logic
+├── borrowings/          # Borrowing logic
+├── users/               # Custom user and profiles
+├── media/               # Uploaded book images
+├── manage.py
+├── requirements.txt
+└── README.md
+```
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License.
+
+---
+
+## 🙋‍♂️ Contributing
+
+Pull requests are welcome. For major changes, please open an issue first to discuss what you’d like to change.
+
+---
