@@ -6,6 +6,7 @@ from django.contrib import messages
 from django.utils import timezone
 from books.models import Book
 from borrowings.models import Borrowing
+from django.http import JsonResponse
 
 class BorrowBookView(LoginRequiredMixin, View):
     def post(self, request, pk):
@@ -36,4 +37,12 @@ class ReturnBookView(LoginRequiredMixin, View):
         borrowing.delete()
         
         messages.success(request, f"You have successfully returned '{borrowing.book.title}'.")
+        
+        # Check if it's an AJAX request
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            return JsonResponse({
+                'status': 'success',
+                'message': f"You have successfully returned '{borrowing.book.title}'."
+            })
+            
         return redirect(reverse_lazy('dashboard'))
