@@ -6,7 +6,9 @@ class Book(models.Model):
     publish_date = models.DateField()
     category = models.CharField(max_length=100)
     stock = models.PositiveIntegerField(default=10) 
-    image = models.ImageField(upload_to='book_images/', blank=True, null=True)  # Add this field
+    image = models.ImageField(upload_to='book_images/', blank=True, null=True)  
+    total_pages = models.PositiveIntegerField(default=100)
+    content = models.TextField(default="This is the default content for the book. ===PAGE=== Add more content here.")
 
 
     def __str__(self):
@@ -16,5 +18,11 @@ class Book(models.Model):
         return self.stock > 0
 
     def borrow_count(self):
-        return self.borrowing_set.count()  # related_name from Borrowing model
+        return self.borrowing_set.count()  
+    
+    def get_pages(self):
+        return self.content.split('===PAGE===')
+
+    def get_page_range(self, start, end):
+        return self.get_pages()[start:end]
 

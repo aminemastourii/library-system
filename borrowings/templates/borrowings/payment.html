@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment for {{ book.title }}</title>
+</head>
+<body>
+    <h1>Payment for "{{ book.title }}"</h1>
+    <p><strong>Author:</strong> {{ book.author }}</p>
+    <p><strong>Category:</strong> {{ book.category }}</p>
+    <p><strong>Pages:</strong> {{ pages }}</p>
+    <p><strong>Duration:</strong> {{ duration }} days</p>
+    <p><strong>Total Price:</strong> ${{ total_price }}</p>
+
+    <form method="post" action="{% url 'payment_page' %}">
+        {% csrf_token %}
+        <button type="submit">Confirm Payment</button>
+    </form>
+
+    <a href="{% url 'dashboard' %}">Cancel</a>
+</body>
+</html>

@@ -3,6 +3,10 @@ from django.urls import reverse_lazy
 from .models import Book
 from borrowings.models import Borrowing
 from django.utils import timezone
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views import View
+from django.shortcuts import get_object_or_404, render, redirect
+from django.contrib import messages
 
 
 class BookListView(ListView):
@@ -29,6 +33,41 @@ class BookDetailView(DetailView):
         context['already_borrowed'] = Borrowing.objects.filter(borrower=user, book=book, end_date__gte=timezone.now()).exists()
         return context
 
+
+
+class FreePreviewView(LoginRequiredMixin, View):
+    def get(self, request, pk):
+        book = get_object_or_404(Book, pk=pk)
+        # Assuming book.content is a list or string of pages
+        preview_pages = book.get_pages(0, 10)  # Implement this in your model
+        return render(request, 'books/preview.html', {
+            'book': book,
+            'pages': preview_pages,
+        })
+
+
+class ReadingView(LoginRequiredMixin, View):
+    def get(self, request, pk):
+        book = get_object_or_404(Book, pk=pk)
+        user = request.user
+        now = timezone.now()
+
+        try:
+            borrowing = Borrowing.objects.get(borrower=user, book=book, end_date__gte=now)
+        except Borrowing.DoesNotExist:
+            messages.error(request, "You haven't borrowed this book or your access expired.")
+            return redirect('book_detail', pk=pk)
+
+        start_page = 0
+        end_page = borrowing.pages_borrowed
+
+        book_pages = book.get_page_range(start_page, end_page)
+
+        return render(request, 'books/reading.html', {
+            'book': book,
+            'pages': book_pages,
+            'end_date': borrowing.end_date
+        })
 
 
 class BookCreateView(CreateView):

@@ -9,6 +9,8 @@ class Borrowing(models.Model):
     book = models.ForeignKey(Book, on_delete=models.CASCADE)
     start_date = models.DateField(default=timezone.now)
     end_date = models.DateField(default=timezone.now() + timedelta(days=30))
+    pages_borrowed = models.PositiveIntegerField(null=True, blank=True)
+    is_paid = models.BooleanField(default=False)
 
     def save(self, *args, **kwargs):
         if self.book.stock <= 0:
@@ -20,7 +22,9 @@ class Borrowing(models.Model):
         super().save(*args, **kwargs)
 
     def is_active(self):
-        return self.end_date >= timezone.now()
+        return self.start_date <= timezone.now().date() <= self.end_date
 
     def time_left(self):
         return (self.end_date - timezone.now().date()).days
+
+    
