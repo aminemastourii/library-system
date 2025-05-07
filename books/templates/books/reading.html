@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reading - {{ book.title }}</title>
+</head>
+<body>
+    <h1>Reading "{{ book.title }}"</h1>
+    <p><strong>Author:</strong> {{ book.author }}</p>
+    <p><strong>Category:</strong> {{ book.category }}</p>
+    <p><strong>Borrowing Ends On:</strong> {{ end_date }}</p>
+
+    <h2>Book Content</h2>
+    <div>
+        {% for page in pages %}
+            <p>{{ page }}</p>
+            <hr>
+        {% endfor %}
+    </div>
+
+    <a href="{% url 'dashboard' %}">Back to Dashboard</a>
+</body>
+</html>
